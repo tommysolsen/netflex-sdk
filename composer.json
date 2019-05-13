@@ -11,10 +11,16 @@
   "homepage": "https://github.com/apility/netflex-sdk",
   "authors": [
     {
+      "name": "Thomas Alrek",
+      "email": "thomas@apility.no",
+      "homepage": "https://github.com/thomas-alrek",
+      "role": "Maintainer"
+    },
+    {
       "name": "Olav Øyen",
       "email": "olav@apility.no",
       "homepage": "https://github.com/olavoyen",
-      "role": "Developer"
+      "role": "Author"
     }
   ],
   "support": {
@@ -25,8 +31,14 @@
     "psr-4": {
       "Netflex\\": "src/Netflex"
     },
-    "files": [
+    "classmap": [
       "src/NF.php"
+    ],
+    "files": [
+      "src/helpers/trigger_deprecation.php",
+      "src/helpers/array_find.php",
+      "src/helpers/object_map.php",
+      "src/helpers/models_autoloader.php"
     ]
   },
   "config": {

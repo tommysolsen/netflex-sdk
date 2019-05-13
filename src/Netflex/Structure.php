@@ -12,10 +12,6 @@ use Carbon\Carbon;
 use JsonSerializable;
 use Illuminate\Support\Collection;
 
-require_once(__DIR__ . '/FieldMapping.php');
-require_once(__DIR__ . '/StructureQuery.php');
-require_once(__DIR__ . '/RevisionCollection.php');
-
 /**
  * @property RevisionCollection $revisions
  */
@@ -423,8 +419,7 @@ abstract class Structure implements ArrayAccess, Serializable, JsonSerializable
         return static::generateObject($data);
       }
     } catch (Exception $ex) {
-      /* intentionally left blank */
-    }
+      /* intentionally left blank */ }
 
     return null;
   }

@@ -14,7 +14,8 @@ class Commerce
 
   public function __construct()
   {
-    trigger_deprecation(self::class);
+    \trigger_deprecation(self::class);
+
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }

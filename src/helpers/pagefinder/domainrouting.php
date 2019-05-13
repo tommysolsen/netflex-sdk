@@ -29,7 +29,6 @@ $page_id = null;
 
 // Check full url first
 while ($found_url_level > 0 && $found_page_level == null) {
-
   NF::debug('Process url', $process_url);
 
   // Check if url has a route
@@ -139,6 +138,8 @@ if ($found_page_level != null) {
 
   // Check if page is public
   if (!$page['public']) {
-    require NF::nfPath('controller_auth.php');
+    require NF::nfPath('helpers/controller_auth.php');
   }
 }
+
+die();

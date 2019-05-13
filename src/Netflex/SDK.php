@@ -4,11 +4,13 @@ namespace Netflex;
 
 use NF;
 
-class SDK {
+class SDK
+{
   /** @var string Path to the legacy bootstrap script */
-  const bootstrap = __DIR__ . '/../../bootstrap.php';
+  const bootstrap = __DIR__ . '/../helpers/bootstrap.php';
 
-  public static function init () {
+  public static function init()
+  {
     global $current_date;
     global $edit_tools;
     global $url_asset;

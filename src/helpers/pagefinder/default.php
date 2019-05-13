@@ -76,7 +76,7 @@ while ($found_url_level > 0 && $found_page_level == null) {
   }
 }
 
-if ($found_page_level != null) {
+if (!is_null($found_page_level)) {
   // Indicate that page is found
   $found_page = 1;
   $master = null;
@@ -100,6 +100,6 @@ if ($found_page_level != null) {
 
   //Check if page is public
   if (!$page['public']) {
-    require NF::nfPath('controller_auth.php');
+    require NF::nfPath('helpers/controller_auth.php');
   }
 }

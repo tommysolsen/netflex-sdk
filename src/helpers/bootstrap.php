@@ -13,14 +13,15 @@ $tested_url = null;
 NF::$site->loadGlobals();
 
 // Start page generation
-require NF::nfPath('functions.php');
-require NF::nfPath('controller_page.php');
+require NF::nfPath('helpers/functions.php');
+require NF::nfPath('helpers/controller_page.php');
 
 if ($page_id) {
   NF::$site->loadPage($page_id, $revision);
   $site = NF::$site;
-  require NF::nfPath('build_template.php');
+  require NF::nfPath('helpers/build_template.php');
   die();
 }
 
-require NF::nfPath('build_error.php');
+require NF::nfPath('helpers/build_error.php');
+die();

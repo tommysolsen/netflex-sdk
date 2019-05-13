@@ -1,9 +1,5 @@
 <?php
 
-// Netflex Web - front end framework functions
-// Developer document. Not for production
-
-// Start session
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
   if (isset(NF::$config['session']['lifetime'])) {
@@ -12,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
   }
 }
 
-$basepath = __DIR__ . '/functions';
+$basepath = NF::nfPath('functions');
 $mode = strpos($_GET['_path'], '_/') === 0 ? 'editor' : 'live';
 
 foreach (glob($basepath . '/common/*.php') as $filename) {

@@ -4,9 +4,6 @@ namespace Netflex;
 
 use NF;
 
-require_once(__DIR__ . '/helpers/array_find.php');
-require_once(__DIR__ . '/helpers/object_map.php');
-
 trait FieldMapping
 {
 

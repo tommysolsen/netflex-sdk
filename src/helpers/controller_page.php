@@ -1,14 +1,5 @@
 <?php
 
-// If site uses ServerSide Rendering, process the request URL
-// and render it server side if supported. Otherwise continue as normal.
-
-require_once(__DIR__ . '/model/autoloader.php');
-
-// Netflex Web - page controller. The foundation on how urls are handeled in netflex. This is the controller that finds pages and creates url assets and other arrays.
-// Developer document. Not for production
-
-// Get and clean url for security
 $real_url = explode('?', urldecode($_GET['_path']))[0];
 $url = trim($real_url, '/');
 
@@ -21,7 +12,7 @@ if (strpos($url, '_/') === 0) {
   if (NF::$jwt->verify($token)) {
     global $payload;
     $payload = NF::$jwt->decode($token);
-    $controller = NF::nfPath('pagefinder/' . $payload->scope . '_' . $payload->relation . '.php');
+    $controller = NF::nfPath('helpers/pagefinder/' . $payload->scope . '_' . $payload->relation . '.php');
 
     if (file_exists($controller)) {
       require $controller;
@@ -33,11 +24,11 @@ if (strpos($url, '_/') === 0) {
   die('Invalid or expired token');
 }
 
-if ($url == '') {
+if (empty($url)) {
   $url = 'index';
 }
 
-$url = $url . '/';
+$url .= '/';
 
 // Get full url for checking redirects
 $fullUrl = ltrim($_SERVER['REQUEST_URI'], '/');
@@ -46,18 +37,16 @@ $fullUrl = ltrim($_SERVER['REQUEST_URI'], '/');
 NF::debug($url, 'Path');
 NF::debug($fullUrl, 'Full URI');
 
-// Cache class
 if ($url == 'CacheStore/') {
   if (isset($_GET['key'])) {
     if (NF::$cache->delete($_GET['key'])) {
-      echo 'Key deleted';
-    } else {
-      echo 'Key does not exist';
+      die('Key deleted');
     }
-  } else {
-    echo 'Key is missing';
+
+    die('Key does not exist');
   }
-  exit;
+
+  die('Key is missing');
 }
 
 // Prepare url
@@ -70,7 +59,7 @@ $url_redirect = get_redirect($url, 'target_url');
 
 if ($url_redirect !== 0) {
   header('Location: ' . $url_redirect . '', true, get_redirect($url, 'type'));
-  exit;
+  die();
 }
 
 // Check for full url redirects
@@ -78,20 +67,20 @@ $url_redirect = get_redirect($fullUrl, 'target_url');
 
 if ($url_redirect !== 0) {
   header('Location: ' . $url_redirect . '', true, get_redirect($fullUrl, 'type'));
-  exit;
+  die();
 }
 
 // Regular redirects
 switch ($url) {
   case 'sitemap.xml/':
-    require NF::nfPath('seo/sitemap.xml.php');
-    exit;
+    require_once(NF::nfPath('helpers/seo/sitemap.xml.php'));
+    break;
   case 'sitemap.xsl/':
-    require NF::nfPath('seo/sitemap.xsl.php');
-    exit;
+    require_once(NF::nfPath('helpers/seo/sitemap.xsl.php'));
+    break;
   case 'robots.txt/':
-    require NF::nfPath('seo/robots.php');
-    exit;
+    require_once(NF::nfPath('helpers/seo/robots.php'));
+    break;
   default:
     break;
 }
@@ -103,7 +92,7 @@ $found_url_level = $url_levels;
 $new_url_part = $url_part;
 
 if (isset(NF::$config['domains']['default'])) {
-  require NF::nfPath('pagefinder/domainrouting.php');
-} else {
-  require NF::nfPath('pagefinder/default.php');
+  require_once(NF::nfPath('helpers/pagefinder/domainrouting.php'));
 }
+
+require_once(NF::nfPath('helpers/pagefinder/default.php'));

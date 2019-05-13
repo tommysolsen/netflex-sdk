@@ -105,3 +105,4 @@ header("Content-Disposition: attachment; filename=sitemap.xsl");
     </html>
   </xsl:template>
 </xsl:stylesheet>
+<?php die(); ?>

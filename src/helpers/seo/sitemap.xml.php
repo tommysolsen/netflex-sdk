@@ -1,4 +1,5 @@
 <?php
+
 // Custom sitemap functions
 function getRevisionDate($page_id, $revision)
 {
@@ -60,7 +61,7 @@ echo '
   // Check if routing is active
   if (isset(NF::$config['domains']['default'])) { } else {
 
-    $sitemap = \NF::$cache->fetch("sitemap");
+    $sitemap = NF::$cache->fetch("sitemap");
     if ($sitemap == null) {
 
       if (!get_setting('sitemap_hide_entries')) {
@@ -158,3 +159,4 @@ echo '
     <?php }
 } ?>
 </urlset>
+<?php die(); ?>

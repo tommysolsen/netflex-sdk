@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * Emit deprecation notice
+ *
+ * @param string $method
+ * @return void
+ */
+function trigger_deprecation ($methd) {
+  trigger_error('Function ' . $methd . ' is deprecated', E_USER_DEPRECATED);
+}
+
+/**
  * Get settings
  *
  * @param string $alias

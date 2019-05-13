@@ -23,7 +23,7 @@ class RevisionCollection implements ArrayAccess
 
   /**
    * Entry ID that we want to get revisions for
-   * @var integer
+   * @var int
    */
   private $objectId = 0;
 
@@ -38,7 +38,7 @@ class RevisionCollection implements ArrayAccess
     $this->class    = $class;
     $this->objectId = $objectId;
 
-    $data = json_decode(\NF::$capi->get("builder/structures/entry/" . $this->objectId . "/revisions/")->getBody(), true);
+    $data = json_decode(\NF::$capi->get('builder/structures/entry/' . $this->objectId . '/revisions/')->getBody(), true);
     foreach ($data as $revision) {
       $this->results[intval($revision['revision'])] = $revision;
     }

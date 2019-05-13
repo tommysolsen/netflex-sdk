@@ -10,14 +10,10 @@ use Netflex\Site\ElasticSearch;
 class StructureQuery
 {
   private $_class;
-  private $_query;
   private $_directory;
-  private $_current;
-  private $_previous;
   private $_limit = -1;
   private $_sortBy = 'id';
   private $_sortDesc = false;
-  private $_first = false;
   private $_paginate = false;
   private $_page = null;
   private $_size = null;

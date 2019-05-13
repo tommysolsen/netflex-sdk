@@ -94,7 +94,7 @@ function get_page_content_image($area, $column, $dimensions, $compression, $clas
     $domain = get_setting('site_cdn_protocol') . '://' . get_setting('site_cdn_url');
     $fill = ($compression === 'fill' ? ('/' . $fill) : '');
     $url = '/media/' . $compression . '/' . $dimensions . $fill . '/' . $image;
-    $src = 'src="' . $domain . $url . '"';
+    $src = $domain . $url . '"';
     $src = $lazy ? ('data-' . $src) : $src;
     $blank = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
     $fallback = $lazy ? ('src="' . $blank . '"') : '';

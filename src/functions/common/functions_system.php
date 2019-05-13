@@ -3,11 +3,11 @@
 /**
  * Emit deprecation notice
  *
- * @param string $method
+ * @param string $methodOrClass
  * @return void
  */
-function trigger_deprecation ($methd) {
-  trigger_error('Function ' . $methd . ' is deprecated', E_USER_DEPRECATED);
+function trigger_deprecation ($methodOrClass) {
+  trigger_error($methodOrClass . ' is deprecated', E_USER_DEPRECATED);
 }
 
 /**

@@ -4,6 +4,9 @@ namespace Netflex\Site;
 
 use NF;
 
+/**
+ * @deprecated v1.1.0
+ */
 class Commerce
 {
   /** @var string */
@@ -11,6 +14,7 @@ class Commerce
 
   public function __construct()
   {
+    trigger_deprecation(self::class);
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }

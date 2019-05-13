@@ -6,24 +6,29 @@ use NF;
 
 class Commerce
 {
+  /** @var string */
+  public $orderSecret = null;
 
   public function __construct()
   {
-
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }
 
     if (isset($_SESSION['netflex_cart'])) {
-      $secret = $_SESSION['netflex_cart'];
-    } else if (isset($_COOKIE['netflex_cart'])) {
-      $secret = $_COOKIE['netflex_cart'];
-    } else {
-      $secret = null;
+      $this->orderSecret = $_SESSION['netflex_cart'];
     }
-    $this->orderSecret = $secret;
+
+    if (!$this->orderSecret && isset($_COOKIE['netflex_cart'])) {
+      $this->orderSecret = $_COOKIE['netflex_cart'];
+    }
   }
 
+  /**
+   * Reset order
+   *
+   * @return void
+   */
   public function reset()
   {
     $_SESSION['netflex_cart'] = null;
@@ -33,6 +38,12 @@ class Commerce
     $this->orderSecret = null;
   }
 
+  /**
+   * Get order from secret
+   *
+   * @param string $secret
+   * @return array|null
+   */
   public function get_order_from_secret($secret = null)
   {
 
@@ -48,36 +59,50 @@ class Commerce
         NF::$cache->save("order/$secret", $order, 3600);
       }
       return $order;
-    } else {
-      return null;
     }
   }
 
+  /**
+   * Get order by ID
+   *
+   * @param int $id
+   * @return array
+   */
   public function get_order($id)
   {
+    $order = NF::$cache->fetch('order/' . $id);
 
-    $order = NF::$cache->fetch("order/$id");
-
-    if ($order == null) {
+    if (is_null($order)) {
       $request = NF::$capi->get('commerce/orders/' . $id);
       $order = json_decode($request->getBody(), true);
-      NF::$cache->save("order/$id", $order, 3600);
+      NF::$cache->save('order/' . $id, $order, 3600);
     }
 
     return $order;
   }
 
+  /**
+   * Reset order cache
+   *
+   * @param array $order
+   * @return void
+   */
   public function reset_order_cache($order)
   {
-
     NF::$cache->delete('order/' . $order['id']);
     NF::$cache->delete('order/' . $order['secret']);
   }
 
+  /**
+   * Add item to cart
+   *
+   * @param array $cart_item
+   * @param array $order = null
+   * @return array
+   */
   public function cart_add(array $cart_item, $order = null)
   {
-
-    if ($order == null) {
+    if (is_null($order)) {
       if (isset($_SESSION['netflex_siteuser_id'])) {
         $customer_id = $_SESSION['netflex_siteuser_id'];
         $request = NF::$capi->post('commerce/orders', ['json' => ['customer_id' => $customer_id]]);
@@ -125,6 +150,12 @@ class Commerce
     return $createOrder;
   }
 
+  /**
+   * Create order
+   *
+   * @param int $customer_id
+   * @return array
+   */
   public function create($customer_id = 0)
   {
 
@@ -144,6 +175,14 @@ class Commerce
     return $order;
   }
 
+  /**
+   * Update item in cart
+   *
+   * @param array $order
+   * @param int $item_id
+   * @param array $data
+   * @return array
+   */
   public function update_cart_item($order, $item_id, $data)
   {
     $request = NF::$capi->put('commerce/orders/' . $order['id'] . '/cart/' . $item_id, ['json' => $data]);
@@ -151,24 +190,50 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Delete item from cart
+   *
+   * @param array $order
+   * @param int $item_id
+   * @return void
+   */
   public function delete_cart_item($order, $item_id)
   {
-    $response = NF::$capi->delete('commerce/orders/' . $order['id'] . '/cart/' . $item_id);
+    NF::$capi->delete('commerce/orders/' . $order['id'] . '/cart/' . $item_id);
     $this->reset_order_cache($order);
   }
 
+  /**
+   * Delete cart
+   *
+   * @param array $order
+   * @return void
+   */
   public function delete_cart($order)
   {
-    $response = NF::$capi->delete('commerce/orders/' . $order['id'] . '/cart');
+    NF::$capi->delete('commerce/orders/' . $order['id'] . '/cart');
     $this->reset_order_cache($order);
   }
 
+  /**
+   * Get orders for customer ID
+   *
+   * @param int $customer_id
+   * @return array<array>
+   */
   public function order_get_customer_orders($customer_id)
   {
     $request = NF::$capi->get('commerce/orders/customer/' . $customer_id);
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Checkout order
+   *
+   * @param array $data
+   * @param array $order
+   * @return array
+   */
   public function order_checkout(array $data, $order)
   {
     $request = NF::$capi->put('commerce/orders/' . $order['id'] . '/checkout', ['json' => $data]);
@@ -176,6 +241,13 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Add payment to order
+   *
+   * @param array $data
+   * @param array $order
+   * @return array
+   */
   public function order_add_payment(array $data, $order)
   {
     $request = NF::$capi->post('commerce/orders/' . $order['id'] . '/payment', ['json' => $data]);
@@ -183,6 +255,13 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Log event on order
+   *
+   * @param array $data
+   * @param array $order
+   * @return array
+   */
   public function order_log(array $data, $order)
   {
     $request = NF::$capi->post('commerce/orders/' . $order['id'] . '/log', ['json' => $data]);
@@ -190,6 +269,13 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Update order
+   *
+   * @param array $data
+   * @param array $order
+   * @return array
+   */
   public function order_update(array $data, $order)
   {
     $request = NF::$capi->put('commerce/orders/' . $order['id'], ['json' => $data]);
@@ -197,6 +283,12 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Register order
+   *
+   * @param array $order
+   * @return array
+   */
   public function order_register($order)
   {
     $request = NF::$capi->put('commerce/orders/' . $order['id'] . '/register');
@@ -204,6 +296,13 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Put order data
+   *
+   * @param array $data
+   * @param array $order
+   * @return array
+   */
   public function order_data(array $data, $order)
   {
     $request = NF::$capi->put('commerce/orders/' . $order['id'] . '/data', ['json' => $data]);
@@ -211,6 +310,14 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Send order document
+   *
+   * @param array $data
+   * @param string $document
+   * @param array $order
+   * @return void
+   */
   public function order_send_document(array $data, $document, $order)
   {
     $request = NF::$capi->post('commerce/orders/' . $order['id'] . '/document/' . $document, ['json' => $data]);
@@ -218,6 +325,13 @@ class Commerce
     return json_decode($request->getBody(), true);
   }
 
+  /**
+   * Get order document
+   *
+   * @param string $document
+   * @param array $order
+   * @return array
+   */
   public function order_get_document($document, $order)
   {
     $request = NF::$capi->get('commerce/orders/' . $order['id'] . '/document/' . $document);

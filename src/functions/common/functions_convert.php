@@ -20,6 +20,7 @@ function convert_datetime($date, $format)
 /**
  * Security and conversion variables
  *
+ * @deprecated 1.1.0 No longer used internally. Will be removed in the next release
  * @param string $value
  * @param string $type
  * @param string $definedValue = ""

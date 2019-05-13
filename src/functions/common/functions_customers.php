@@ -9,9 +9,6 @@
  */
 function get_customer_data($username, $data = null)
 {
-  $username = convert_to_safe_string($username, 'text');
-  $data = convert_to_safe_string($data, 'str');
-
   try {
     $customer = json_decode(NF::$capi->get('relations/customers/customer/resolve/' . $username)->getBody(), true);
   } catch (Exception $e) {
@@ -33,7 +30,7 @@ function get_customer_data($username, $data = null)
  */
 function get_group_members($group)
 {
-  $group = convert_to_safe_string($group, 'int');
+  $group = intval($group);
   $request = NF::$capi->get('relations/customers/groups/' . $group . '/customers');
   $members = json_decode($request->getBody(), true);
   return $members;
@@ -44,13 +41,13 @@ function get_group_members($group)
  *
  * @param int $customer
  * @param int $group
- * @return void
+ * @return int
  */
 function add_customer_to_group($customer, $group)
 {
-  $customer = convert_to_safe_string($customer, 'int');
-  $group = convert_to_safe_string($group, 'int');
-  $request = NF::$capi->put('relations/customers/customer/' . $customer, ['json' => ['groups' => $group]]);
+  $customer = intval($customer);
+  $group = intval($group);
+  NF::$capi->put('relations/customers/customer/' . $customer, ['json' => ['groups' => $group]]);
   return 1;
 }
 
@@ -62,8 +59,6 @@ function add_customer_to_group($customer, $group)
  */
 function delete_customer($user_hash)
 {
-  $user_hash = convert_to_safe_string($user_hash, 'text');
-
   if ($user_hash) {
     // Check that customer exists
     $customer = json_decode(NF::$capi->get('relations/customers/customer/hash/' . $user_hash)->getBody(), true);

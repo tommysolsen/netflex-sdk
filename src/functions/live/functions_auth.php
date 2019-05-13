@@ -10,9 +10,7 @@
  */
 function check_login($username, $password, $groups = '99999', $field = 'mail')
 {
-  $username = convert_to_safe_string(strtolower($username), 'str');
-  $password = convert_to_safe_string($password, 'str');
-  $groups = convert_to_safe_string($groups, 'str');
+  $username = strtolower($username);
 
   if ($groups == '99999') {
     $input = ['username' => $username, 'password' => $password, 'field' => $field];
@@ -55,9 +53,7 @@ function check_login($username, $password, $groups = '99999', $field = 'mail')
  */
 function check_access($username = null, $groups = null)
 {
-  if ($username != null || $groups = null) {
-    $username = convert_to_safe_string($username, 'str');
-
+  if (!is_null($username) || $groups = null) {
     try {
       $customer = json_decode(NF::$capi->get('relations/customers/customer/resolve/' . $username)->getBody(), true);
     } catch (Exception $e) {
@@ -66,7 +62,7 @@ function check_access($username = null, $groups = null)
 
     if (isset($customer['id']) && $groups == '99999') {
       return 1;
-    } else if (isset($customer['id']) && in_array($group, $customer['groups'])) {
+    } else if (isset($customer['id']) && in_array($groups, $customer['groups'])) {
       return 1;
     } else if (isset($customer['id'])) {
       return 2;

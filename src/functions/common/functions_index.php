@@ -12,20 +12,11 @@
  */
 function search($terms, $relation = null, $limit = 0, $orderby = null, $cacheKey = null)
 {
-  $relation = convert_to_safe_string($relation, 'str');
-  $limit = convert_to_safe_string($limit, 'int');
+  $limit = intval($limit);
 
   NF::debug(['terms' => $terms, 'relation' => $relation, 'limit' => $limit, 'orderby' => $orderby], 'Search terms');
 
-  // Make query ready for processing
-  $terms = convert_to_safe_string($terms, 'str');
-
-  if ($relation) {
-    $endpoint = 'search/' . $relation;
-  } else {
-    $endpoint = 'search';
-  }
-
+  $endpoint = $relation ? ('search/' . $relation) : 'search';
 
   if ($cacheKey == null) {
     $searchkey = md5($terms . $relation . $limit . serialize($orderby));
@@ -53,9 +44,7 @@ function search($terms, $relation = null, $limit = 0, $orderby = null, $cacheKey
  */
 function delete_index($relation, $relation_id)
 {
-  // Clean values
-  $relation = convert_to_safe_string($relation, 'text');
-  $relation_id = convert_to_safe_string($relation_id, 'int');
+  $relation_id = intval($relation_id);
 
   try {
     NF::$capi->delete('search/purge/item/' . $relation . '/' . $relation_id);

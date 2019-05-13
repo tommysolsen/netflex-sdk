@@ -27,8 +27,8 @@ function set_edit_btn($settings = [], $position = 'topright')
       $config = base64_encode(serialize($settings['config']));
     }
 
-    $class = convert_to_safe_string($settings['class'], 'str');
-    $style = convert_to_safe_string($settings['style'], 'str');
+    $class = $settings['class'];
+    $style = $settings['style'];
 
     if ($settings['label'] != null) {
       $btntitle = $settings['label'];

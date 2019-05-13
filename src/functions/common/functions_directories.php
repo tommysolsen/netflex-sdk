@@ -10,7 +10,7 @@ function get_directory_entry($id)
 {
   global $revision_override;
 
-  $id = convert_to_safe_string($id, 'int');
+  $id = intval($id);
   $entrydata = $revision_override ? null : NF::$cache->fetch("entry/$id");
 
   if ($entrydata == null) {
@@ -178,7 +178,7 @@ function get_latest_entries($directory_id, $orderlimit)
 function get_full_directory($directory_id, $order = [])
 {
 
-  $directory_id = convert_to_safe_string($directory_id, 'int');
+  $directory_id = intval($directory_id);
   $data = NF::$cache->fetch("structure/$directory_id/entries");
   if ($data == null) {
     $request = NF::$capi->get('builder/structures/' . $directory_id . '/entries');

@@ -10,6 +10,7 @@ use Netflex\Site\Commerce;
 use Netflex\Site\Search;
 use Netflex\Site\JWT;
 use PhpConsole\Handler;
+use Dotenv\Dotenv;
 
 class NF
 {
@@ -66,6 +67,8 @@ class NF
       }
     }
 
+    self::loadEnv(self::$site_root);
+
     if ($site == null) {
       $site = md5(self::$site_root);
     }
@@ -79,6 +82,7 @@ class NF
 
     // Site configuration
     self::$config = self::getConfig();
+
     if (isset($_REQUEST['_clearcache'])) {
       self::clearCache();
     }
@@ -123,6 +127,16 @@ class NF
   {
     self::$cache->purge();
     sleep(3);
+  }
+
+  public static function loadEnv($root) {
+    if (file_exists($root . '/.env')) {
+      $dotenv = Dotenv::create($root);
+      $dotenv->load();
+      return;
+    }
+
+    throw new Exception('.env is missing');
   }
 
   /**
@@ -201,7 +215,7 @@ class NF
   {
     return new Client([
       'base_uri' => 'https://api.netflexapp.com/v1/',
-      'auth'    => [$config['api']['pubkey'], $config['api']['privkey']]
+      'auth' => [env('NETFLEX_PUBLIC_KEY'), env('NETFLEX_PRIVATE_KEY')]
     ]);
   }
 

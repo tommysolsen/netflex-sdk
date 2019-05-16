@@ -35,6 +35,7 @@
       "src/NF.php"
     ],
     "files": [
+      "src/helpers/env.php",
       "src/helpers/trigger_deprecation.php",
       "src/helpers/array_find.php",
       "src/helpers/object_map.php",
@@ -50,6 +51,7 @@
     "guzzlehttp/guzzle": "^6.2",
     "nesbot/carbon": "^1.21",
     "phpfastcache/phpfastcache": "^7.0",
-    "php-console/php-console": "^3.1"
+    "php-console/php-console": "^3.1",
+    "vlucas/phpdotenv": "^3.3"
   }
 }

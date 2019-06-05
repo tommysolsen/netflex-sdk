@@ -75,10 +75,7 @@ class NF
     // Caching
     self::$cacheDir = self::$site_root . 'storage/cache/';
     // Memcached caching
-    self::$cache = new Cache(
-      $site,
-      class_exists('Memcached') ? 'memcached' : 'files'
-    );
+    self::$cache = new Cache();
 
     // Site configuration
     self::$config = self::getConfig();
@@ -86,15 +83,14 @@ class NF
       self::clearCache();
     }
 
+    self::$console = self::startPhpConsole();
+    self::$site = new Site();
+
+    // Datastore for Netflex
+    self::$store = new Store();
 
     // Guzzle api client
     self::$capi = self::initGuzzle(self::$config);
-
-    self::$console = self::startPhpConsole();
-    self::$site = new Site();
-    self::$jwt = new JWT(self::$site->variables['netflex_api']);
-    // Datastore for Netflex
-    self::$store = new Store();
 
     // Security library
     self::$security = new Security();

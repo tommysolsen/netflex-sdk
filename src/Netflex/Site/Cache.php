@@ -11,14 +11,15 @@ use Phpfastcache\Drivers\Memcached\Config as MemcachedConfig;
 class Cache
 {
 
-  private static $key;
-  private static $cache;
+	private static $key;
+	private static $cache;
 
-  public function __construct($key, $driver = 'files') {
+	public function __construct() {
 
-    self::$key = $key;
+    self::$key = NF::$sitename;
 
     $config = null;
+    $driver = class_exists('Memcached') ? 'memcached' : 'files';
 
     switch ($driver) {
       case 'memcached':
@@ -42,11 +43,11 @@ class Cache
         throw new Exception('Invalid Cache driver');
     }
 
-    self::$cache = CacheManager::getInstance($driver, $config);
-  }
+		self::$cache = CacheManager::getInstance($driver, $config);
+	}
 
-  public function getCacheKey($key) {
-    return md5(self::$key . $key);
+	public function getCacheKey($key) {
+		return md5(self::$key . $key);
   }
 
   public function get ($key) {
@@ -66,7 +67,7 @@ class Cache
     return $this->save($key, $value, $ttl, null);
   }
 
-  public function fetch($key) {
+	public function fetch($key) {
     $item = self::$cache->getItem(self::getCacheKey($key));
     $item = unserialize($item->get());
     return $item;
@@ -77,53 +78,36 @@ class Cache
     return !is_null($item->get());
   }
 
-  /**
-   * Checks cache and returns value if present. Computes the resolve function,
-   * stores and returns if not present.
-   * 
-   * @param string $key Cache key
-   * @param int $ttl TTL length, 0 is infinite
-   * @param \Closure Function that computes cache value if not already cached.
-   * @return mixed Cached value
-   */
-  public function resolve(string $key, int $ttl, \Closure $resolveFunction) {
-    if(self::has($key))
-      return self::fetch($key);
-    $results = $resolveFunction();
-    self::save($key, $results, $ttl);
-    return $results;
-  }
-
   public function save($key, $value, $ttl = 0, $tag = null) {
     $value = serialize($value);
     $item = self::$cache->getItem(self::getCacheKey($key));
     $item->set($value)->expiresAfter($ttl);
     self::$cache->save($item);
-  }
+	}
 
-  public function saveMultiple(array $items) {
-    foreach($items as $item) {
-      $this->save($item['key'], $item['value'], $item['ttl'], $item['tag']);
-    }
-  }
+	public function saveMultiple(array $items) {
+		foreach($items as $item) {
+			$this->save($item['key'], $item['value'], $item['ttl'], $item['tag']);
+		}
+	}
 
   public function delete($key) {
     $key = self::getCacheKey($key);
     self::$cache->deleteItem($key);
   }
 
-  public function deleteMultiple(array $keys) {
-    foreach($keys as $key) {
-      $this->delete($key);
-    }
-  }
+	public function deleteMultiple(array $keys) {
+		foreach($keys as $key) {
+			$this->delete($key);
+		}
+	}
 
-  public function deleteTag($tag) {
-    self::$cache->deleteItemsByTags($tags);
-  }
+	public function deleteTag($tag) {
+		self::$cache->deleteItemsByTags($tags);
+	}
 
-  public function purge() {
-    self::$cache->clear();
-  }
+	public function purge() {
+		self::$cache->clear();
+	}
 
 }

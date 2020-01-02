@@ -75,13 +75,8 @@ class Site
 
   public function loadPage($id = null, $revision = null) {
     global $_mode;
-    if($id || $revision) {
-      $this->content_id = $id;
-      $this->content_revision = $revision;
-    } else {
-      $id = $this->content_id;
-      $revision = $this->content_revision;
-    }
+    $id = $id ?? $this->content_id;
+    $revision = $revision ?? $this->content_revision;
 
     $this->__content = NF::$cache->fetch("page/$this->content_id");
     if ($_mode) {
@@ -205,7 +200,6 @@ class Site
         $template['pages'][$tmp['id']] = $tmp;
       }
     }
-
     return $template;
   }
 

@@ -13,7 +13,7 @@ function get_template_part($alias)
   global $url_asset;
 
   NF::debug('templates/' . $templatealias . '/' . $alias, 'part');
-  require(NF::$site_root . '/templates/' . $templatealias . '/' . $alias . '.php');
+  \NF::$site->requireFile(NF::$site_root . '/templates/' . $templatealias . '/' . $alias . '.php');
   NF::debug('templates/' . $templatealias . '/' . $alias, '!part');
 }
 
@@ -34,7 +34,7 @@ function get_block($alias, $vars = [])
   }
 
   NF::debug('blocks/' . $alias, 'block');
-  require(NF::$site_root . 'blocks/' . $alias . '.php');
+  NF::$site->requireFile(NF::$site_root . 'blocks/' . $alias . '.php');
   NF::debug('blocks/' . $alias, '!block');
 }
 

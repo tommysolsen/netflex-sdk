@@ -43,5 +43,5 @@ $templatealias = $tp_file;
 
 // Include the file
 NF::debug('templates/'.$tp_file, 'template');
-require(NF::$site_root . 'templates/'.$tp_file.'.php');
+NF::$site->requireFile(NF::$site_root . 'templates/'.$tp_file.'.php');
 NF::debug('templates/'.$tp_file, '!template');

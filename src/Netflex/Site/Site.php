@@ -1,8 +1,10 @@
 <?php
 namespace Netflex\Site;
 
+use Closure;
 use NF;
 use Exception;
+use stdClass;
 
 class Site
 {
@@ -14,7 +16,16 @@ class Site
   public $statics;
   public $nav;
   public $variables;
+  public $hooks;
 
+
+
+  public function __construct()
+  {
+    $this->hooks = \NF::$site
+                   ? \NF::$site->hooks
+                   : new stdClass;
+  }
   public function loadGlobals () {
     global $_mode;
 
@@ -203,5 +214,26 @@ class Site
         }
       }
     }
+  }
+
+
+  public function requireFile(string $filename) {
+    $filename = $this->runHooks("requireFile.filename", $filename);
+    require $filename;
+  }
+  public function addHook(string $key, \Closure $function) {
+    if(!is_array($this->hooks->{$key} ?? false)) {
+      $this->hooks->{$key} = [];
+    }
+    $this->hooks->{$key}[] = $function;
+  }
+
+  private function runHooks(string $key, $payload) {
+    if(array_key_exists($key, $this->hooks) && is_array($this->hooks->{$key})) {
+      foreach($this->hooks->{$key} as $hook) {
+        $payload = $hook($payload);
+      }
+    }
+    return $payload;
   }
 }
